@@ -368,7 +368,11 @@
   }
 
   function displayTaskList() {
-    return "<h1>Task List here!</h1>";
+    // add a new Task to the Task List
+    $("#newTaskButton").on("click", function () {
+      alert("Clicked!");
+      AddNewTask();
+    });
   }
 
   function display404() {}
@@ -410,6 +414,10 @@
     let messageArea = $("#messageArea");
     messageArea.hide();
     let taskInput = $("#taskTextInput");
+
+    // DEBUG CODE - TO BE REMOVED
+    //console.log(taskInput.val());
+    //$("#taskList").append("<h1>Hey. I'm new!</h1>");
 
     if (taskInput.val() != "" && taskInput.val().charAt(0) != " ") {
       let newElement = `
