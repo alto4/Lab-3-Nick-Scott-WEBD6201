@@ -368,7 +368,10 @@
   }
 
   function displayTaskList() {
-    AddTaskEventListeners();
+    // don't allow visitors to go here
+    authGuard();
+
+    addTaskEventListeners();
     // add a new Task to the Task List
     $("#newTaskButton").on("click", function () {
       alert("Clicked!");
@@ -408,7 +411,7 @@
     }
   }
 
-  function AddTaskEventListeners() {
+  function addTaskEventListeners() {
     // Edit an Item in the Task List
     $("ul").on("click", ".editButton", function () {
       let editText = $(this).parent().parent().children(".editTextInput");
@@ -473,7 +476,7 @@
         .text("Please enter a valid Task.");
     }
 
-    AddTaskEventListeners();
+    addTaskEventListeners();
   }
 
   /**
