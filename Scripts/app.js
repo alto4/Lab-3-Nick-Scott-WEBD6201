@@ -368,6 +368,7 @@
   }
 
   function displayTaskList() {
+    AddTaskEventListeners();
     // add a new Task to the Task List
     $("#newTaskButton").on("click", function () {
       alert("Clicked!");
@@ -407,6 +408,37 @@
     }
   }
 
+  function AddTaskEventListeners() {
+    // Edit an Item in the Task List
+    $("ul").on("click", ".editButton", function () {
+      let editText = $(this).parent().parent().children(".editTextInput");
+      let text = $(this).parent().parent().text();
+      editText.val(text).show().trigger("select");
+      editText.on("keypress", function (event) {
+        if (event.key == "Enter") {
+          if (editText.val() != "" && editText.val().charAt(0) != " ") {
+            editText.hide();
+            $(this).parent().children("#taskText").text(editText.val());
+            messageArea.removeAttr("class").hide();
+          } else {
+            editText.trigger("focus").trigger("select");
+            messageArea
+              .show()
+              .addClass("alert alert-danger")
+              .text("Please enter a valid Task.");
+          }
+        }
+      });
+    });
+
+    // Delete a Task from the Task List
+    $("ul").on("click", ".deleteButton", function () {
+      if (confirm("Are you sure?")) {
+        $(this).closest("li").remove();
+      }
+    });
+  }
+
   /**
    * This function adds a new Task to the TaskList
    */
@@ -440,6 +472,8 @@
         .addClass("alert alert-danger")
         .text("Please enter a valid Task.");
     }
+
+    AddTaskEventListeners();
   }
 
   /**
@@ -462,7 +496,7 @@
       }
     });
 
-    // Edit an Item in the Task List
+    /*   // Edit an Item in the Task List
     $("ul").on("click", ".editButton", function () {
       let editText = $(this).parent().parent().children(".editTextInput");
       let text = $(this).parent().parent().text();
@@ -490,6 +524,7 @@
         $(this).closest("li").remove();
       }
     });
+ */
   }
 
   function Start() {
