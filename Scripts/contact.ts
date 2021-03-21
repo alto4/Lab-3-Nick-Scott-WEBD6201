@@ -1,7 +1,7 @@
 // Contact Class
-
-((core)=>{
-  class Contact {
+namespace core
+{
+    export class Contact {
 
     private m_fullName: string;
     private m_emailAddress: string;
@@ -122,9 +122,5 @@
       this.EmailAddress = propertyArray[2];
     }
   }
-
-  core.Contact = Contact;
-
-})(core || (core={}));
-
+}
 

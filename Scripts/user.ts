@@ -1,9 +1,6 @@
-"use strict";
-// User Class
-
-((core)=>
+namespace core
 {
-  class User 
+  export class User 
   {
 
     private m_displayName: string;
@@ -140,9 +137,6 @@
       this.Username = propertyArray[2];
     }
   }
-
-  core.User = User;
-
-})(core || (core={}));
+}
 
 

@@ -1,5 +1,6 @@
-(function (core) {
-  class Router {
+namespace core
+{
+  export class Router {
 
     private m_activeLink: string;
     private m_linkData: string;
@@ -86,7 +87,7 @@
     }
   }
   core.Router = Router;
-})(core || (core = {}));
+};
 
 // TODO: Extract code below to own file
 let router = new core.Router();
