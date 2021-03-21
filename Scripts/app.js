@@ -7,6 +7,22 @@
 "use strict";
 
 ((core) => {
+  function addLinkEvents() {
+    //remove all events first
+    $("ul>li>a").off("click");
+    $("ul>li>a").off("mouseover");
+    // loop through each anchor tag in the unordered list and
+    // add an event listener / handler to allow for
+    // content injection
+    $("ul>li>a").on("click", function () {
+      loadLink($(this).attr("id"));
+    });
+    // make it look like each nav item is an active link
+    $("ul>li>a").on("mouseover", function () {
+      $(this).css("cursor", "pointer");
+    });
+  }
+
   /**
    * Inject the Navigation bar into the Header element and highlight the active link based on the pageName parameter
    *
@@ -30,6 +46,8 @@
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
         $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
         history.pushState({}, "", router.ActiveLink); // this replaces the url displayed in the browser
+
+        // addLinkEvents();
       });
 
       // make it look like each nav item is an active link
@@ -37,6 +55,21 @@
         $(this).css("cursor", "pointer");
       });
     });
+  }
+
+  /**
+   * This function switches page content to the relative link passed into the function
+   * optionally, LinkData can also be passed
+   * @param {string} link
+   * @param {string} [data=""]
+   * @returns {void}
+   */
+  function loadLink(link, data = "") {
+    highlightActiveLink(link);
+    router.LinkData = data;
+    loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+    highlightActiveLink(link);
+    history.pushState({}, "", router.ActiveLink); // this replaces the url displayed in the browser
   }
 
   /**
@@ -186,18 +219,21 @@
       contactList.innerHTML = data;
 
       $("button.edit").on("click", function () {
-        location.href = "/edit#" + $(this).val();
+        // location.href = "/edit#" + $(this).val();
+        loadLink("edit#" + $(this).add(val));
       });
 
       $("button.delete").on("click", function () {
         if (confirm("Are you sure?")) {
           localStorage.removeItem($(this).val());
         }
-        location.href = "/contact-list"; // refresh the page
+        //location.href = "/contact-list"; // refresh the page
+        loadLink("contact-list");
       });
 
       $("#addButton").on("click", function () {
-        location.href = "/edit";
+        //location.href = "/edit";
+        loadLink("edit");
       });
     }
   }
@@ -242,12 +278,14 @@
       localStorage.setItem(key, contact.serialize());
 
       // return to the contact list
-      location.href = "/contact-list";
+      //location.href = "/contact-list";
+      loadLink("contact-list");
     });
 
     $("#cancelButton").on("click", function () {
       // return to the contact list
-      location.href = "/contact-list";
+      //location.href = "/contact-list";
+      loadLink("contact-list");
     });
   }
 
@@ -286,7 +324,8 @@
         messageArea.removeAttr("class").hide();
 
         // redirect user to secure area - contact-list.html
-        location.href = "/contact-list";
+        loadLink("contact-list");
+        // location.href = "/contact-list";
       } else {
         // display an error message
         username.trigger("focus").trigger("select");
@@ -316,7 +355,8 @@
       // clear the login form
       document.forms[0].reset();
       // return to the home page
-      location.href = "/home";
+      //location.href = "/home";
+      loadLink("home");
     });
   }
 
@@ -335,7 +375,8 @@
         sessionStorage.clear();
 
         // redirect back to login
-        location.href = "/login";
+        //location.href = "/login";
+        loadLink("login");
       });
 
       // make it look like each nav item is an active link
@@ -353,17 +394,21 @@
       <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
     </li>`).insertBefore("#loginListItem");
     } else {
+      //logged out
       // swap out the login link for logout
       $("#loginListItem").html(
         `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
       );
     }
+    // addLinkEvents();
+    // highlightActiveLink(router.ActiveLink);
   }
 
   function authGuard() {
     if (!sessionStorage.getItem("user")) {
       // redirect back to login page
-      location.href = "/login";
+      //location.href = "/login";
+      loadLink("login");
     }
   }
 

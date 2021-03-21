@@ -9,6 +9,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
     "@popperjs/core": "^2.6.0",
+    "@types/jquery": "^3.5.5",
     "bootstrap": "^5.0.0-beta1",
     "jquery": "^3.5.1"
   }
