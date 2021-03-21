@@ -59,7 +59,7 @@
      *
      * @returns {string}
      */
-    toString(): string 
+    public toString(): string 
     {
       return `Full Name     : ${this.FullName} \nContact Number: ${this.ContactNumber}\nEmail Address : ${this.EmailAddress}`;
     }
@@ -69,7 +69,7 @@
      *
      * @returns {Object}
      */
-    toJSON(): object
+    public toJSON(): object
     {
       return {
         "FullName": this.FullName,
@@ -83,7 +83,7 @@
      *
      * @param {Object} data
      */
-    fromJSON(data: any): void
+    public fromJSON(data: any): void
     {
       this.FullName = data.FullName;
       this.ContactNumber = data.ContactNumber;
@@ -95,7 +95,7 @@
      *
      * @returns {string}
      */
-    serialize(): string
+    public serialize(): string
     {
       if(this.FullName !== "" && this.ContactNumber !== "" && this.EmailAddress !== "")
       {
@@ -114,7 +114,7 @@
      * @param {string} data
      * @return {void}
      */
-    deserialize(data: string): void
+    public deserialize(data: string): void
     {
       let propertyArray: string[] = data.split(",");
       this.FullName = propertyArray[0];
