@@ -531,7 +531,7 @@ namespace core
   }
 
   /**
-   * This function is used to display the task-list page
+   * This function is used to display the tasklist page
    * 
    * @returns {void}
    */

@@ -161,7 +161,7 @@ namespace core
           .show()
           .addClass("alert alert-danger")
           .text(
-            "Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitalized last name."
+            "Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name."
           );
       } else {
         messageArea.removeAttr("class").hide();
@@ -531,7 +531,7 @@ namespace core
   }
 
   /**
-   * This function is used to display the task-list page
+   * This function is used to display the tasklist page
    * 
    * @returns {void}
    */
@@ -552,7 +552,7 @@ namespace core
   /**
    * This is the router used to 'redirect' a user to a different page
    * 
-   * @param {string} activeLink 
+   * @param activeLink {}
    * @returns {Function} 
    */
   function ActiveLinkCallBack(activeLink: string): Function {
@@ -585,11 +585,6 @@ namespace core
     }
   }
 
-  /**
-   * This function is used to add event listeners to the task list
-   * 
-   * @returns {void}
-   */
   function addTaskEventListeners(): void {
     // Edit an Item in the Task List
     $("ul").on("click", ".editButton", function () {
@@ -626,8 +621,6 @@ namespace core
 
   /**
    * This function adds a new Task to the TaskList
-   * 
-   * @returns {void}
    */
   function AddNewTask(): void {
     let messageArea = $("#messageArea");
@@ -665,8 +658,6 @@ namespace core
 
   /**
    * This function is the Callback function for the TaskList
-   * 
-   * @returns {void}
    *
    */
   function DisplayTaskList(): void {
@@ -716,11 +707,6 @@ namespace core
  */
   }
 
-  /**
-   * Starts the page 
-   * 
-   * @returns {void}
-   */
   function Start(): void {
     console.log("App Started...");
 
