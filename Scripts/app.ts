@@ -220,7 +220,7 @@ namespace core
       }
     });
   }
-
+ 
   function displayContactList(): void {
     // don't allow visitors to go here
     authGuard();
