@@ -134,7 +134,7 @@ namespace core
    */
   function loadFooter(): void {
     // inject the Footer
-    $.get("./components/footer.html", function (data) {
+    $.get("./Views/components/footer.html", function (data) {
       $("footer").html(data);
     });
   }
