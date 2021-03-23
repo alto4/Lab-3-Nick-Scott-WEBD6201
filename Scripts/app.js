@@ -267,8 +267,8 @@ var core;
           </li>`).insertBefore("#loginListItem");
             }
             if (!taskListLink) {
-                $(`<li class="nav-item">
-          <a id="taskListLink" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
+                $(`<li id="taskListLink"  class="nav-item">
+          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
         </li>`).insertBefore("#loginListItem");
             }
         }

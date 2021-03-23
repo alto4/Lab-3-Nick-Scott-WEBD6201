@@ -435,8 +435,8 @@ namespace core
       
       if(!taskListLink) {
         // Add link to Task List for logged in user
-        $(`<li class="nav-item">
-          <a id="taskListLink" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
+        $(`<li id="taskListLink"  class="nav-item">
+          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
         </li>`).insertBefore("#loginListItem");
       }
     } else {
