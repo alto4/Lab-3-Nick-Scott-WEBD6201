@@ -26,14 +26,15 @@ var core;
     function loadHeader(pageName) {
         $.get("./Views/components/header.html", function (data) {
             $("header").html(data);
-            toggleLogin();
             $(`#${pageName}`).addClass("active");
+            addLinkEvents();
             $("a").on("click", function () {
                 $(`#${router.ActiveLink}`).removeClass("active");
                 router.ActiveLink = $(this).attr("id");
                 loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
                 $(`#${router.ActiveLink}`).addClass("active");
                 history.pushState({}, "", router.ActiveLink);
+                addLinkEvents();
             });
             $("a").on("mouseover", function () {
                 $(this).css("cursor", "pointer");
@@ -42,14 +43,22 @@ var core;
     }
     function loadLink(link, data = "") {
         highlightActiveLink(link);
-        router.LinkData = data;
+        if (link == "logout") {
+            sessionStorage.clear();
+            router.ActiveLink = "login";
+        }
+        else {
+            router.ActiveLink = link;
+            router.LinkData = data;
+        }
+        highlightActiveLink(link, data);
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-        highlightActiveLink(link);
         history.pushState({}, "", router.ActiveLink);
     }
     function loadContent(pageName, callback) {
         $.get(`./Views/content/${pageName}.html`, function (data) {
             $("main").html(data);
+            toggleLogin();
             callback();
         });
     }
@@ -241,6 +250,8 @@ var core;
     }
     function displayRegister() { }
     function toggleLogin() {
+        let contactListLink = $("#contactListLink")[0];
+        let taskListLink = $("#taskListLink")[0];
         if (sessionStorage.getItem("user")) {
             $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
             $("#logout").on("click", function () {
@@ -250,16 +261,27 @@ var core;
             $("#logout").on("mouseover", function () {
                 $(this).css("cursor", "pointer");
             });
-            $(`<li class="nav-item">
-        <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
-      </li>`).insertBefore("#loginListItem");
-            $(`<li class="nav-item">
-      <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
-    </li>`).insertBefore("#loginListItem");
+            if (!contactListLink) {
+                $(`<li id="contactListLink" class="nav-item">
+            <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
+          </li>`).insertBefore("#loginListItem");
+            }
+            if (!taskListLink) {
+                $(`<li class="nav-item">
+          <a id="taskListLink" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
+        </li>`).insertBefore("#loginListItem");
+            }
         }
         else {
             $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`);
+            if (contactListLink) {
+                $("#contactListLink").remove();
+            }
+            if (taskListLink) {
+                $("#taskListLink").remove();
+            }
         }
+        addLinkEvents();
     }
     function authGuard() {
         if (!sessionStorage.getItem("user")) {

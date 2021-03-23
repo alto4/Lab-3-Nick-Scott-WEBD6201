@@ -50,10 +50,10 @@ namespace core
     $.get("./Views/components/header.html", function (data) {
       $("header").html(data); // load the navigation bar
 
-      toggleLogin(); // add login / logout and secure links
-
+      
       $(`#${pageName}`).addClass("active"); // highlight active link
 
+      addLinkEvents();
       // loop through each anchor tag in the unordered list and
       // add an event listener / handler to allow for
       // content injection
@@ -64,7 +64,7 @@ namespace core
         $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
         history.pushState({}, "", router.ActiveLink); // this replaces the url displayed in the browser
 
-        // addLinkEvents();
+         addLinkEvents();
       });
 
       // make it look like each nav item is an active link
@@ -81,11 +81,24 @@ namespace core
    * @param {string} [data=""]
    * @returns {void}
    */
-  function loadLink(link: string, data = ""): void {
+  function loadLink(link: string, data: string = ""): void {
+    
+    
     highlightActiveLink(link);
-    router.LinkData = data;
+    
+    if(link == "logout")
+    {
+      sessionStorage.clear();
+      router.ActiveLink = "login";
+    } 
+    else 
+    {
+      router.ActiveLink = link;
+      router.LinkData = data;
+    }
+    
+    highlightActiveLink(link, data);
     loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-    highlightActiveLink(link);
     history.pushState({}, "", router.ActiveLink); // this replaces the url displayed in the browser
   }
 
@@ -100,6 +113,7 @@ namespace core
     // inject content
     $.get(`./Views/content/${pageName}.html`, function (data) {
       $("main").html(data);
+      toggleLogin(); // add login / logout and secure links
 
       callback();
     });
@@ -385,6 +399,10 @@ namespace core
   function displayRegister():void {}
 
   function toggleLogin():void {
+    // Make a reference to track presence of protected pages in navbar
+    let contactListLink = $("#contactListLink")[0];
+    let taskListLink = $("#taskListLink")[0];
+
     // if user is logged in
     if (sessionStorage.getItem("user")) {
       // swap out the login link for logout
@@ -406,23 +424,41 @@ namespace core
         $(this).css("cursor", "pointer");
       });
 
-      // Add link to Contact List for logged in user
-      $(`<li class="nav-item">
-        <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
-      </li>`).insertBefore("#loginListItem");
-
-      // Add link to Task List for logged in user
-      $(`<li class="nav-item">
-      <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
-    </li>`).insertBefore("#loginListItem");
+      
+      if(!contactListLink)
+      {
+        // Add link to Contact List for logged in user
+        $(`<li id="contactListLink" class="nav-item">
+            <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
+          </li>`).insertBefore("#loginListItem");
+      }
+      
+      if(!taskListLink) {
+        // Add link to Task List for logged in user
+        $(`<li class="nav-item">
+          <a id="taskListLink" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
+        </li>`).insertBefore("#loginListItem");
+      }
     } else {
       //logged out
       // swap out the login link for logout
       $("#loginListItem").html(
         `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
       );
+
+      // Remove contact list link if user is logged out
+      if(contactListLink)
+      {
+        $("#contactListLink").remove();
+      }
+      
+      // Remove task list link if user if logged out
+      if(taskListLink) {
+        $("#taskListLink").remove();  
+      }
     }
-    // addLinkEvents();
+
+     addLinkEvents();
     // highlightActiveLink(router.ActiveLink);
   }
 
