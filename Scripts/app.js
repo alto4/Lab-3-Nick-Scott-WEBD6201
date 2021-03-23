@@ -24,7 +24,7 @@ var core;
         $(`#${router.ActiveLink}`).addClass("active");
     }
     function loadHeader(pageName) {
-        $.get("./components/header.html", function (data) {
+        $.get("./Views/components/header.html", function (data) {
             $("header").html(data);
             $(`#${pageName}`).addClass("active");
             addLinkEvents();
@@ -56,14 +56,14 @@ var core;
         history.pushState({}, "", router.ActiveLink);
     }
     function loadContent(pageName, callback) {
-        $.get(`./content/${pageName}.html`, function (data) {
+        $.get(`./Views/content/${pageName}.html`, function (data) {
             $("main").html(data);
             toggleLogin();
             callback();
         });
     }
     function loadFooter() {
-        $.get("./components/footer.html", function (data) {
+        $.get("./Views/components/footer.html", function (data) {
             $("footer").html(data);
         });
     }
