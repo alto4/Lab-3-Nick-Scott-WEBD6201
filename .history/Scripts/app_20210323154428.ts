@@ -51,12 +51,9 @@ namespace core
    * @param {string} pageName
    * @returns {void}
    */
-  function loadHeader(pageName: string): void 
-  {
+  function loadHeader(pageName: string): void {
     // inject the Header
-    //I removed /Views from this as a TEST
-    $.get("./Views/components/header.html", function (data) 
-    {
+    $.get("./Views/components/header.html", function (data) {
       $("header").html(data); // load the navigation bar
 
       
@@ -120,7 +117,6 @@ namespace core
    */
   function loadContent(pageName: string, callback: Function): void {
     // inject content
-    //I removed /Views from this as a TEST
     $.get(`./Views/content/${pageName}.html`, function (data) {
       $("main").html(data);
       toggleLogin(); // add login / logout and secure links
@@ -165,7 +161,7 @@ namespace core
           .show()
           .addClass("alert alert-danger")
           .text(
-            "Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitalized last name."
+            "Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name."
           );
       } else {
         messageArea.removeAttr("class").hide();
@@ -521,11 +517,7 @@ namespace core
     // highlightActiveLink(router.ActiveLink);
   }
 
-  /**\
-   * Used to redirect user to login before navigating to a page locked behind a login
-   * 
-   * @returns {void}
-   */
+  
   function authGuard(): void {
     if (!sessionStorage.getItem("user")) {
       // redirect back to login page
@@ -534,11 +526,6 @@ namespace core
     }
   }
 
-  /**
-   * This function is used to display the task-list page
-   * 
-   * @returns {void}
-   */
   function displayTaskList(): void {
     // don't allow visitors to go here
     authGuard();
@@ -553,12 +540,6 @@ namespace core
 
   function display404(): void {}
 
-  /**
-   * This is the router used to 'redirect' a user to a different page
-   * 
-   * @param {string} activeLink 
-   * @returns {Function} 
-   */
   function ActiveLinkCallBack(activeLink: string): Function {
     switch (activeLink) {
       case "home":
@@ -589,11 +570,6 @@ namespace core
     }
   }
 
-  /**
-   * This function is used to add event listeners to the task list
-   * 
-   * @returns {void}
-   */
   function addTaskEventListeners(): void {
     // Edit an Item in the Task List
     $("ul").on("click", ".editButton", function () {
@@ -630,8 +606,6 @@ namespace core
 
   /**
    * This function adds a new Task to the TaskList
-   * 
-   * @returns {void}
    */
   function AddNewTask(): void {
     let messageArea = $("#messageArea");
@@ -669,8 +643,6 @@ namespace core
 
   /**
    * This function is the Callback function for the TaskList
-   * 
-   * @returns {void}
    *
    */
   function DisplayTaskList(): void {
@@ -720,11 +692,6 @@ namespace core
  */
   }
 
-  /**
-   * Starts the page 
-   * 
-   * @returns {void}
-   */
   function Start(): void {
     console.log("App Started...");
 

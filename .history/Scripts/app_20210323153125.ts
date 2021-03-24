@@ -3,7 +3,7 @@ namespace core
   /**
    * This function allows the buttons to change the mouse icon on hover
    * 
-   * @returns {void}
+   * @returns 
    */
   function addLinkEvents(): void {
     //remove all events first
@@ -49,14 +49,10 @@ namespace core
    * Inject the Navigation bar into the Header element and highlight the active link based on the pageName parameter
    *
    * @param {string} pageName
-   * @returns {void}
    */
-  function loadHeader(pageName: string): void 
-  {
+  function loadHeader(pageName: string): void {
     // inject the Header
-    //I removed /Views from this as a TEST
-    $.get("./Views/components/header.html", function (data) 
-    {
+    $.get("./Views/components/header.html", function (data) {
       $("header").html(data); // load the navigation bar
 
       
@@ -120,7 +116,6 @@ namespace core
    */
   function loadContent(pageName: string, callback: Function): void {
     // inject content
-    //I removed /Views from this as a TEST
     $.get(`./Views/content/${pageName}.html`, function (data) {
       $("main").html(data);
       toggleLogin(); // add login / logout and secure links
@@ -129,11 +124,6 @@ namespace core
     });
   }
 
-  /**
-   * This function loads the footer
-   * 
-   * @returns {void}
-   */
   function loadFooter(): void {
     // inject the Footer
     $.get("./Views/components/footer.html", function (data) {
@@ -149,11 +139,6 @@ namespace core
 
   function displayServices(): void {}
 
-  /**
-   * This function uses regex to test a user input name 
-   * 
-   * @returns {void}
-   */
   function testFullName(): void {
     let messageArea = $("#messageArea").hide();
     let fullNamePattern = /([A-Z][a-z]{1,25})+(\s|,|-)([A-Z][a-z]{1,25})+(\s|,|-)*/;
@@ -165,7 +150,7 @@ namespace core
           .show()
           .addClass("alert alert-danger")
           .text(
-            "Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitalized last name."
+            "Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name."
           );
       } else {
         messageArea.removeAttr("class").hide();
@@ -173,11 +158,6 @@ namespace core
     });
   }
 
-  /**
-   * This function uses regex to test a user input contact number 
-   * 
-   * @returns {void}
-   */
   function testContactNumber(): void {
     let messageArea = $("#messageArea");
     let contactNumberPattern = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
@@ -197,11 +177,6 @@ namespace core
     });
   }
 
-  /**
-   * This function uses regex to test a user input email 
-   * 
-   * @returns {void}
-   */
   function testEmailAddress(): void {
     let messageArea = $("#messageArea");
     let emailAddressPattern = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
@@ -219,22 +194,12 @@ namespace core
     });
   }
 
-  /**
-   * Function to call all of the test functions
-   * 
-   * @returns {void}
-   */
   function formValidation(): void {
     testFullName();
     testContactNumber();
     testEmailAddress();
   }
 
-  /**
-   * This function is used to display the contact page
-   * 
-   * @returns {void}
-   */
   function displayContact(): void {
     // form validation
     formValidation();
@@ -261,11 +226,6 @@ namespace core
     });
   }
  
-  /**
-   * This function is used to display the Contact List page
-   * 
-   * @returns {void}
-   */
   function displayContactList(): void {
     // don't allow visitors to go here
     authGuard();
@@ -319,11 +279,6 @@ namespace core
     }
   }
 
-  /**
-   * This function is used to display the Edit page
-   * 
-   * @returns {void}
-   */
   function displayEdit(): void {
     let key = router.LinkData;
 
@@ -377,8 +332,6 @@ namespace core
 
   /**
    * Processes the Login and performs validation
-   * 
-   * @returns {void}
    */
   function performLogin(): void {
     let messageArea = $("#messageArea");
@@ -427,8 +380,6 @@ namespace core
 
   /**
    * Displays and Processes the Login page
-   * 
-   * @returns {void}
    */
   function displayLogin(): void {
     $("#loginButton").on("click", function () {
@@ -452,11 +403,6 @@ namespace core
 
   function displayRegister():void {}
 
-  /**
-   * This function is used to toggle the differences between a logged in user, and a non logged in user
-   * 
-   * @returns {void}
-   */
   function toggleLogin():void {
     // Make a reference to track presence of protected pages in navbar
     let contactListLink = $("#contactListLink")[0];
@@ -495,7 +441,7 @@ namespace core
       if(!taskListLink) {
         // Add link to Task List for logged in user
         $(`<li id="taskListLink"  class="nav-item">
-          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-thumbtack"></i> Task List</a>
+          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
         </li>`).insertBefore("#loginListItem");
       }
     } else {
@@ -521,11 +467,6 @@ namespace core
     // highlightActiveLink(router.ActiveLink);
   }
 
-  /**\
-   * Used to redirect user to login before navigating to a page locked behind a login
-   * 
-   * @returns {void}
-   */
   function authGuard(): void {
     if (!sessionStorage.getItem("user")) {
       // redirect back to login page
@@ -534,11 +475,6 @@ namespace core
     }
   }
 
-  /**
-   * This function is used to display the task-list page
-   * 
-   * @returns {void}
-   */
   function displayTaskList(): void {
     // don't allow visitors to go here
     authGuard();
@@ -553,12 +489,6 @@ namespace core
 
   function display404(): void {}
 
-  /**
-   * This is the router used to 'redirect' a user to a different page
-   * 
-   * @param {string} activeLink 
-   * @returns {Function} 
-   */
   function ActiveLinkCallBack(activeLink: string): Function {
     switch (activeLink) {
       case "home":
@@ -589,11 +519,6 @@ namespace core
     }
   }
 
-  /**
-   * This function is used to add event listeners to the task list
-   * 
-   * @returns {void}
-   */
   function addTaskEventListeners(): void {
     // Edit an Item in the Task List
     $("ul").on("click", ".editButton", function () {
@@ -630,8 +555,6 @@ namespace core
 
   /**
    * This function adds a new Task to the TaskList
-   * 
-   * @returns {void}
    */
   function AddNewTask(): void {
     let messageArea = $("#messageArea");
@@ -669,8 +592,6 @@ namespace core
 
   /**
    * This function is the Callback function for the TaskList
-   * 
-   * @returns {void}
    *
    */
   function DisplayTaskList(): void {
@@ -720,11 +641,6 @@ namespace core
  */
   }
 
-  /**
-   * Starts the page 
-   * 
-   * @returns {void}
-   */
   function Start(): void {
     console.log("App Started...");
 

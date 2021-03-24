@@ -80,7 +80,7 @@ var core;
                 messageArea
                     .show()
                     .addClass("alert alert-danger")
-                    .text("Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitlalized last name.");
+                    .text("Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitalized last name.");
             }
             else {
                 messageArea.removeAttr("class").hide();
@@ -268,7 +268,7 @@ var core;
             }
             if (!taskListLink) {
                 $(`<li id="taskListLink"  class="nav-item">
-          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Task List</a>
+          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-thumbtack"></i> Task List</a>
         </li>`).insertBefore("#loginListItem");
             }
         }

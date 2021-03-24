@@ -51,12 +51,10 @@ namespace core
    * @param {string} pageName
    * @returns {void}
    */
-  function loadHeader(pageName: string): void 
-  {
+  function loadHeader(pageName: string): void {
     // inject the Header
     //I removed /Views from this as a TEST
-    $.get("./Views/components/header.html", function (data) 
-    {
+    $.get("./Views/components/header.html", function (data) {
       $("header").html(data); // load the navigation bar
 
       
