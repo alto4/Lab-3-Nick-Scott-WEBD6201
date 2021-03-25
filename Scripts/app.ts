@@ -364,13 +364,11 @@ namespace core
       localStorage.setItem(key, contact.serialize());
 
       // return to the contact list
-      //location.href = "/contact-list";
       loadLink("contact-list");
     });
 
     $("#cancelButton").on("click", function () {
       // return to the contact list
-      //location.href = "/contact-list";
       loadLink("contact-list");
     });
   }
@@ -445,7 +443,6 @@ namespace core
       // clear the login form
       document.forms[0].reset();
       // return to the home page
-      //location.href = "/home";
       loadLink("home");
     });
   }
@@ -474,7 +471,6 @@ namespace core
         sessionStorage.clear();
 
         // redirect back to login
-        //location.href = "/login";
         loadLink("login");
       });
 
@@ -518,7 +514,6 @@ namespace core
     }
 
      addLinkEvents();
-    // highlightActiveLink(router.ActiveLink);
   }
 
   /**\
@@ -529,7 +524,6 @@ namespace core
   function authGuard(): void {
     if (!sessionStorage.getItem("user")) {
       // redirect back to login page
-      //location.href = "/login";
       loadLink("login");
     }
   }
@@ -594,6 +588,14 @@ namespace core
    * @returns {void}
    */
   function addTaskEventListeners(): void {
+    
+    // Delete a Task from the Task List
+    $("ul").off().on("click", ".deleteButton", function () {
+      if (confirm("Are you sure?")) {
+        $(this).closest("li").remove();
+      }
+    });
+
     // Edit an Item in the Task List
     $("ul").on("click", ".editButton", function () {
       let editText = $(this).parent().parent().children(".editTextInput");
@@ -618,13 +620,6 @@ namespace core
         }
       });
     });
-    
-    // Delete a Task from the Task List
-    $("ul").off("click").on("click", ".deleteButton", function () {
-      if (confirm("Are you sure?")) {
-        $(this).closest("li").remove();
-      }
-    });
   }
 
   /**
@@ -636,10 +631,6 @@ namespace core
     let messageArea = $("#messageArea");
     messageArea.hide();
     let taskInput = $("#taskTextInput");
-
-    // DEBUG CODE - TO BE REMOVED
-    //console.log(taskInput.val());
-    //$("#taskList").append("<h1>Hey. I'm new!</h1>");
 
     if (taskInput.val() != "" && taskInput.val().toString().charAt(0) != " ") {
       let newElement = `
@@ -686,7 +677,7 @@ namespace core
       if (event.key == "Enter") {
         AddNewTask();
       }
-    });
+    });    
   }
 
   /**

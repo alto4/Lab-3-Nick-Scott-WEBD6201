@@ -326,6 +326,11 @@ var core;
         }
     }
     function addTaskEventListeners() {
+        $("ul").off().on("click", ".deleteButton", function () {
+            if (confirm("Are you sure?")) {
+                $(this).closest("li").remove();
+            }
+        });
         $("ul").on("click", ".editButton", function () {
             let editText = $(this).parent().parent().children(".editTextInput");
             let text = $(this).parent().parent().text();
@@ -347,11 +352,6 @@ var core;
                     }
                 }
             });
-        });
-        $("ul").off("click").on("click", ".deleteButton", function () {
-            if (confirm("Are you sure?")) {
-                $(this).closest("li").remove();
-            }
         });
     }
     function AddNewTask() {
