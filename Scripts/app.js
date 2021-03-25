@@ -1,157 +1,160 @@
 "use strict";
 var core;
 (function (core) {
-    function addLinkEvents() {
-        $("ul>li>a").off("click");
-        $("ul>li>a").off("mouseover");
-        $("ul>li>a").on("click", function () {
-            loadLink($(this).attr("id"));
-        });
-        $("ul>li>a").on("mouseover", function () {
-            $(this).css("cursor", "pointer");
-        });
+  function addLinkEvents() {
+    $("ul>li>a").off("click");
+    $("ul>li>a").off("mouseover");
+    $("ul>li>a").on("click", function () {
+      loadLink($(this).attr("id"));
+    });
+    $("ul>li>a").on("mouseover", function () {
+      $(this).css("cursor", "pointer");
+    });
+  }
+  function highlightActiveLink(link, data = "") {
+    $(`#${router.ActiveLink}`).removeClass("active");
+    if (link == "logout") {
+      sessionStorage.clear();
+      router.ActiveLink = "login";
+    } else {
+      router.ActiveLink = link;
+      router.LinkData = data;
     }
-    function highlightActiveLink(link, data = "") {
+    $(`#${router.ActiveLink}`).addClass("active");
+  }
+  function loadHeader(pageName) {
+    $.get("./Views/components/header.html", function (data) {
+      $("header").html(data);
+      $(`#${pageName}`).addClass("active");
+      addLinkEvents();
+      $("a").on("click", function () {
         $(`#${router.ActiveLink}`).removeClass("active");
-        if (link == "logout") {
-            sessionStorage.clear();
-            router.ActiveLink = "login";
-        }
-        else {
-            router.ActiveLink = link;
-            router.LinkData = data;
-        }
-        $(`#${router.ActiveLink}`).addClass("active");
-    }
-    function loadHeader(pageName) {
-        $.get("./Views/components/header.html", function (data) {
-            $("header").html(data);
-            $(`#${pageName}`).addClass("active");
-            addLinkEvents();
-            $("a").on("click", function () {
-                $(`#${router.ActiveLink}`).removeClass("active");
-                router.ActiveLink = $(this).attr("id");
-                loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-                $(`#${router.ActiveLink}`).addClass("active");
-                history.pushState({}, "", router.ActiveLink);
-                addLinkEvents();
-            });
-            $("a").on("mouseover", function () {
-                $(this).css("cursor", "pointer");
-            });
-        });
-    }
-    function loadLink(link, data = "") {
-        highlightActiveLink(link);
-        if (link == "logout") {
-            sessionStorage.clear();
-            router.ActiveLink = "login";
-        }
-        else {
-            router.ActiveLink = link;
-            router.LinkData = data;
-        }
-        highlightActiveLink(link, data);
+        router.ActiveLink = $(this).attr("id");
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+        $(`#${router.ActiveLink}`).addClass("active");
         history.pushState({}, "", router.ActiveLink);
+        addLinkEvents();
+      });
+      $("a").on("mouseover", function () {
+        $(this).css("cursor", "pointer");
+      });
+    });
+  }
+  function loadLink(link, data = "") {
+    highlightActiveLink(link);
+    if (link == "logout") {
+      sessionStorage.clear();
+      router.ActiveLink = "login";
+    } else {
+      router.ActiveLink = link;
+      router.LinkData = data;
     }
-    function loadContent(pageName, callback) {
-        $.get(`./Views/content/${pageName}.html`, function (data) {
-            $("main").html(data);
-            toggleLogin();
-            callback();
-        });
-    }
-    function loadFooter() {
-        $.get("./Views/components/footer.html", function (data) {
-            $("footer").html(data);
-        });
-    }
-    function displayHome() { }
-    function displayAbout() { }
-    function displayProjects() { }
-    function displayServices() { }
-    function testFullName() {
-        let messageArea = $("#messageArea").hide();
-        let fullNamePattern = /([A-Z][a-z]{1,25})+(\s|,|-)([A-Z][a-z]{1,25})+(\s|,|-)*/;
-        $("#fullName").on("blur", function () {
-            if (!fullNamePattern.test($(this).val().toString())) {
-                $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitalized last name.");
-            }
-            else {
-                messageArea.removeAttr("class").hide();
-            }
-        });
-    }
-    function testContactNumber() {
-        let messageArea = $("#messageArea");
-        let contactNumberPattern = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
-        $("#contactNumber").on("blur", function () {
-            if (!contactNumberPattern.test($(this).val().toString())) {
-                $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Contact Number. Country code and area code are both optional");
-            }
-            else {
-                messageArea.removeAttr("class").hide();
-            }
-        });
-    }
-    function testEmailAddress() {
-        let messageArea = $("#messageArea");
-        let emailAddressPattern = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
-        $("#emailAddress").on("blur", function () {
-            if (!emailAddressPattern.test($(this).val().toString())) {
-                $(this).trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Please enter a valid Email Address.");
-            }
-            else {
-                messageArea.removeAttr("class").hide();
-            }
-        });
-    }
-    function formValidation() {
-        testFullName();
-        testContactNumber();
-        testEmailAddress();
-    }
-    function displayContact() {
-        formValidation();
-        $("#sendButton").on("click", (event) => {
-            let subscribeCheckbox = $("#subscribeCheckbox")[0];
-            let fullName = $("#fullName")[0];
-            let contactNumber = $("#contactNumber")[0];
-            let emailAddress = $("#emailAddress")[0];
-            if (subscribeCheckbox.checked) {
-                let contact = new core.Contact(fullName.value, contactNumber.value, emailAddress.value);
-                if (contact.serialize()) {
-                    let key = contact.FullName.substring(0, 1) + Date.now();
-                    localStorage.setItem(key, contact.serialize());
-                }
-            }
-        });
-    }
-    function displayContactList() {
-        authGuard();
-        if (localStorage.length > 0) {
-            let contactList = document.getElementById("contactList");
-            let data = "";
-            let keys = Object.keys(localStorage);
-            let index = 1;
-            for (const key of keys) {
-                let contactData = localStorage.getItem(key);
-                let contact = new core.Contact();
-                contact.deserialize(contactData);
-                data += `<tr>
+    highlightActiveLink(link, data);
+    loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+    history.pushState({}, "", router.ActiveLink);
+  }
+  function loadContent(pageName, callback) {
+    $.get(`./Views/content/${pageName}.html`, function (data) {
+      $("main").html(data);
+      toggleLogin();
+      callback();
+    });
+  }
+  function loadFooter() {
+    $.get("./Views/components/footer.html", function (data) {
+      $("footer").html(data);
+    });
+  }
+  function displayHome() {}
+  function displayAbout() {}
+  function displayProjects() {}
+  function displayServices() {}
+  function testFullName() {
+    let messageArea = $("#messageArea").hide();
+    let fullNamePattern = /([A-Z][a-z]{1,25})+(\s|,|-)([A-Z][a-z]{1,25})+(\s|,|-)*/;
+    $("#fullName").on("blur", function () {
+      if (!fullNamePattern.test($(this).val().toString())) {
+        $(this).trigger("focus").trigger("select");
+        messageArea
+          .show()
+          .addClass("alert alert-danger")
+          .text(
+            "Please enter a valid Full Name. This must include at least a Capitalized first name followed by a Capitalized last name."
+          );
+      } else {
+        messageArea.removeAttr("class").hide();
+      }
+    });
+  }
+  function testContactNumber() {
+    let messageArea = $("#messageArea");
+    let contactNumberPattern = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+    $("#contactNumber").on("blur", function () {
+      if (!contactNumberPattern.test($(this).val().toString())) {
+        $(this).trigger("focus").trigger("select");
+        messageArea
+          .show()
+          .addClass("alert alert-danger")
+          .text(
+            "Please enter a valid Contact Number. Country code and area code are both optional"
+          );
+      } else {
+        messageArea.removeAttr("class").hide();
+      }
+    });
+  }
+  function testEmailAddress() {
+    let messageArea = $("#messageArea");
+    let emailAddressPattern = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
+    $("#emailAddress").on("blur", function () {
+      if (!emailAddressPattern.test($(this).val().toString())) {
+        $(this).trigger("focus").trigger("select");
+        messageArea
+          .show()
+          .addClass("alert alert-danger")
+          .text("Please enter a valid Email Address.");
+      } else {
+        messageArea.removeAttr("class").hide();
+      }
+    });
+  }
+  function formValidation() {
+    testFullName();
+    testContactNumber();
+    testEmailAddress();
+  }
+  function displayContact() {
+    formValidation();
+    $("#sendButton").on("click", (event) => {
+      let subscribeCheckbox = $("#subscribeCheckbox")[0];
+      let fullName = $("#fullName")[0];
+      let contactNumber = $("#contactNumber")[0];
+      let emailAddress = $("#emailAddress")[0];
+      if (subscribeCheckbox.checked) {
+        let contact = new core.Contact(
+          fullName.value,
+          contactNumber.value,
+          emailAddress.value
+        );
+        if (contact.serialize()) {
+          let key = contact.FullName.substring(0, 1) + Date.now();
+          localStorage.setItem(key, contact.serialize());
+        }
+      }
+    });
+  }
+  function displayContactList() {
+    authGuard();
+    if (localStorage.length > 0) {
+      let contactList = document.getElementById("contactList");
+      let data = "";
+      let keys = Object.keys(localStorage);
+      let index = 1;
+      for (const key of keys) {
+        let contactData = localStorage.getItem(key);
+        let contact = new core.Contact();
+        contact.deserialize(contactData);
+        data += `<tr>
           <th scope="row" class="text-center">${index}</th>
           <td>${contact.FullName}</td>
           <td>${contact.ContactNumber}</td>
@@ -159,207 +162,217 @@ var core;
           <td class="text-center"><button value="${key}" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i> Edit</button></td>
           <td class="text-center"><button value="${key}" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i> Delete</button></td>
           </tr>`;
-                index++;
-            }
-            contactList.innerHTML = data;
-            $("button.edit").on("click", function () {
-                loadLink("edit#" + $(this).val().toString());
-            });
-            $("button.delete").on("click", function () {
-                if (confirm("Are you sure?")) {
-                    localStorage.removeItem($(this).val().toString());
-                }
-                loadLink("contact-list");
-            });
-            $("#addButton").on("click", function () {
-                loadLink("edit");
-            });
+        index++;
+      }
+      contactList.innerHTML = data;
+      $("button.edit").on("click", function () {
+        loadLink("edit#" + $(this).val().toString());
+      });
+      $("button.delete").on("click", function () {
+        if (confirm("Are you sure?")) {
+          localStorage.removeItem($(this).val().toString());
         }
+        loadLink("contact-list");
+      });
+      $("#addButton").on("click", function () {
+        loadLink("edit");
+      });
     }
-    function displayEdit() {
-        let key = router.LinkData;
-        let contact = new core.Contact();
-        if (key != "") {
-            contact.deserialize(localStorage.getItem(key));
-            $("#fullName").val(contact.FullName);
-            $("#contactNumber").val(contact.ContactNumber);
-            $("#emailAddress").val(contact.EmailAddress);
+  }
+  function displayEdit() {
+    let key = router.LinkData;
+    let contact = new core.Contact();
+    if (key != "") {
+      contact.deserialize(localStorage.getItem(key));
+      $("#fullName").val(contact.FullName);
+      $("#contactNumber").val(contact.ContactNumber);
+      $("#emailAddress").val(contact.EmailAddress);
+    } else {
+      $("main>h1").text("Add Contact");
+      $("#editButton").html(`<i class="fas fa-plus-circle fa-lg"></i> Add`);
+    }
+    formValidation();
+    $("#editButton").on("click", function () {
+      if (key == "") {
+        key = contact.FullName.substring(0, 1) + Date.now();
+      }
+      contact.FullName = $("#fullName").val().toString();
+      contact.ContactNumber = $("#contactNumber").val().toString();
+      contact.EmailAddress = $("#emailAddress").val().toString();
+      localStorage.setItem(key, contact.serialize());
+      loadLink("contact-list");
+    });
+    $("#cancelButton").on("click", function () {
+      loadLink("contact-list");
+    });
+  }
+  function performLogin() {
+    let messageArea = $("#messageArea");
+    messageArea.hide();
+    let username = $("#username");
+    let password = $("#password");
+    let success = false;
+    let newUser = new core.User();
+    $.get("./Data/users.json", function (data) {
+      for (const user of data.users) {
+        if (
+          username.val() == user.Username &&
+          password.val() == user.Password
+        ) {
+          newUser.fromJSON(user);
+          success = true;
+          break;
         }
-        else {
-            $("main>h1").text("Add Contact");
-            $("#editButton").html(`<i class="fas fa-plus-circle fa-lg"></i> Add`);
-        }
-        formValidation();
-        $("#editButton").on("click", function () {
-            if (key == "") {
-                key = contact.FullName.substring(0, 1) + Date.now();
-            }
-            contact.FullName = $("#fullName").val().toString();
-            contact.ContactNumber = $("#contactNumber").val().toString();
-            contact.EmailAddress = $("#emailAddress").val().toString();
-            localStorage.setItem(key, contact.serialize());
-            loadLink("contact-list");
-        });
-        $("#cancelButton").on("click", function () {
-            loadLink("contact-list");
-        });
-    }
-    function performLogin() {
-        let messageArea = $("#messageArea");
-        messageArea.hide();
-        let username = $("#username");
-        let password = $("#password");
-        let success = false;
-        let newUser = new core.User();
-        $.get("./Data/users.json", function (data) {
-            for (const user of data.users) {
-                if (username.val() == user.Username &&
-                    password.val() == user.Password) {
-                    newUser.fromJSON(user);
-                    success = true;
-                    break;
-                }
-            }
-            if (success) {
-                sessionStorage.setItem("user", newUser.serialize());
-                messageArea.removeAttr("class").hide();
-                loadLink("task-list");
-            }
-            else {
-                username.trigger("focus").trigger("select");
-                messageArea
-                    .show()
-                    .addClass("alert alert-danger")
-                    .text("Error: Invalid login information");
-            }
-        });
-    }
-    function displayLogin() {
-        $("#loginButton").on("click", function () {
-            performLogin();
-        });
-        $("#password").on("keypress", function (event) {
-            if (event.key == "Enter") {
-                performLogin();
-            }
-        });
-        $("#cancelButton").on("click", function () {
-            document.forms[0].reset();
-            loadLink("home");
-        });
-    }
-    function displayRegister() { }
-    function toggleLogin() {
-        let contactListLink = $("#contactListLink")[0];
-        let taskListLink = $("#taskListLink")[0];
-        if (sessionStorage.getItem("user")) {
-            $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt fa-lg"></i> Logout</a>`);
-            $("#logout").on("click", function () {
-                sessionStorage.clear();
-                loadLink("login");
-            });
-            $("#logout").on("mouseover", function () {
-                $(this).css("cursor", "pointer");
-            });
-            if (!contactListLink) {
-                $(`<li id="contactListLink" class="nav-item">
+      }
+      if (success) {
+        sessionStorage.setItem("user", newUser.serialize());
+        messageArea.removeAttr("class").hide();
+        loadLink("task-list");
+      } else {
+        username.trigger("focus").trigger("select");
+        messageArea
+          .show()
+          .addClass("alert alert-danger")
+          .text("Error: Invalid login information");
+      }
+    });
+  }
+  function displayLogin() {
+    $("#loginButton").on("click", function () {
+      performLogin();
+    });
+    $("#password").on("keypress", function (event) {
+      if (event.key == "Enter") {
+        performLogin();
+      }
+    });
+    $("#cancelButton").on("click", function () {
+      document.forms[0].reset();
+      loadLink("home");
+    });
+  }
+  function displayRegister() {}
+  function toggleLogin() {
+    let contactListLink = $("#contactListLink")[0];
+    let taskListLink = $("#taskListLink")[0];
+    if (sessionStorage.getItem("user")) {
+      $("#loginListItem").html(
+        `<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt fa-lg"></i> Logout</a>`
+      );
+      $("#logout").on("click", function () {
+        sessionStorage.clear();
+        loadLink("login");
+      });
+      $("#logout").on("mouseover", function () {
+        $(this).css("cursor", "pointer");
+      });
+      if (!contactListLink) {
+        $(`<li id="contactListLink" class="nav-item">
             <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
           </li>`).insertBefore("#loginListItem");
-            }
-            if (!taskListLink) {
-                $(`<li id="taskListLink"  class="nav-item">
+      }
+      if (!taskListLink) {
+        $(`<li id="taskListLink"  class="nav-item">
           <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-thumbtack fa-lg"></i> Task List</a>
         </li>`).insertBefore("#loginListItem");
-            }
+      }
+    } else {
+      $("#loginListItem").html(
+        `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt fa-lg"></i> Login</a>`
+      );
+      if (contactListLink) {
+        $("#contactListLink").remove();
+      }
+      if (taskListLink) {
+        $("#taskListLink").remove();
+      }
+    }
+    addLinkEvents();
+  }
+  function authGuard() {
+    if (!sessionStorage.getItem("user")) {
+      loadLink("login");
+    }
+  }
+  function displayTaskList() {
+    authGuard();
+    addTaskEventListeners();
+    $("#newTaskButton").on("click", function () {
+      AddNewTask();
+    });
+  }
+  function display404() {}
+  function ActiveLinkCallBack(activeLink) {
+    switch (activeLink) {
+      case "home":
+        return displayHome;
+      case "about":
+        return displayAbout;
+      case "projects":
+        return displayProjects;
+      case "services":
+        return displayServices;
+      case "contact":
+        return displayContact;
+      case "contact-list":
+        return displayContactList;
+      case "edit":
+        return displayEdit;
+      case "task-list":
+        return displayTaskList;
+      case "login":
+        return displayLogin;
+      case "register":
+        return displayRegister;
+      case "404":
+        return display404;
+      default:
+        console.error("ERROR: callback does not exist: " + activeLink);
+        break;
+    }
+  }
+  function addTaskEventListeners() {
+    $("ul")
+      .off()
+      .on("click", ".deleteButton", function () {
+        if (confirm("Are you sure?")) {
+          $(this).closest("li").remove();
         }
-        else {
-            $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt fa-lg"></i> Login</a>`);
-            if (contactListLink) {
-                $("#contactListLink").remove();
-            }
-            if (taskListLink) {
-                $("#taskListLink").remove();
-            }
+      });
+    $("ul").on("click", ".editButton", function () {
+      let editText = $(this).parent().parent().children(".editTextInput");
+      let text = $(this).parent().parent().text();
+      let messageArea = $("#messageArea");
+      editText.val(text).show().trigger("select");
+      editText.on("keypress", function (event) {
+        if (event.key == "Enter") {
+          if (
+            editText.val() != "" &&
+            editText.val().toString().charAt(0) != " "
+          ) {
+            editText.hide();
+            $(this)
+              .parent()
+              .children("#taskText")
+              .text(editText.val().toString());
+            messageArea.removeAttr("class").hide();
+          } else {
+            editText.trigger("focus").trigger("select");
+            messageArea
+              .show()
+              .addClass("alert alert-danger")
+              .text("Please enter a valid Task.");
+          }
         }
-        addLinkEvents();
-    }
-    function authGuard() {
-        if (!sessionStorage.getItem("user")) {
-            loadLink("login");
-        }
-    }
-    function displayTaskList() {
-        authGuard();
-        addTaskEventListeners();
-        $("#newTaskButton").on("click", function () {
-            AddNewTask();
-        });
-    }
-    function display404() { }
-    function ActiveLinkCallBack(activeLink) {
-        switch (activeLink) {
-            case "home":
-                return displayHome;
-            case "about":
-                return displayAbout;
-            case "projects":
-                return displayProjects;
-            case "services":
-                return displayServices;
-            case "contact":
-                return displayContact;
-            case "contact-list":
-                return displayContactList;
-            case "edit":
-                return displayEdit;
-            case "task-list":
-                return displayTaskList;
-            case "login":
-                return displayLogin;
-            case "register":
-                return displayRegister;
-            case "404":
-                return display404;
-            default:
-                console.error("ERROR: callback does not exist: " + activeLink);
-                break;
-        }
-    }
-    function addTaskEventListeners() {
-        $("ul").off().on("click", ".deleteButton", function () {
-            if (confirm("Are you sure?")) {
-                $(this).closest("li").remove();
-            }
-        });
-        $("ul").on("click", ".editButton", function () {
-            let editText = $(this).parent().parent().children(".editTextInput");
-            let text = $(this).parent().parent().text();
-            let messageArea = $("#messageArea");
-            editText.val(text).show().trigger("select");
-            editText.on("keypress", function (event) {
-                if (event.key == "Enter") {
-                    if (editText.val() != "" && editText.val().toString().charAt(0) != " ") {
-                        editText.hide();
-                        $(this).parent().children("#taskText").text(editText.val().toString());
-                        messageArea.removeAttr("class").hide();
-                    }
-                    else {
-                        editText.trigger("focus").trigger("select");
-                        messageArea
-                            .show()
-                            .addClass("alert alert-danger")
-                            .text("Please enter a valid Task.");
-                    }
-                }
-            });
-        });
-    }
-    function AddNewTask() {
-        let messageArea = $("#messageArea");
-        messageArea.hide();
-        let taskInput = $("#taskTextInput");
-        if (taskInput.val() != "" && taskInput.val().toString().charAt(0) != " ") {
-            let newElement = `
+      });
+    });
+  }
+  function AddNewTask() {
+    let messageArea = $("#messageArea");
+    messageArea.hide();
+    let taskInput = $("#taskTextInput");
+    if (taskInput.val() != "" && taskInput.val().toString().charAt(0) != " ") {
+      let newElement = `
               <li class="list-group-item" id="task">
               <span id="taskText">${taskInput.val()}</span>
               <span class="float-end">
@@ -369,38 +382,36 @@ var core;
               <input type="text" class="form-control edit-task editTextInput">
               </li>
               `;
-            $("#taskList").append(newElement);
-            messageArea.removeAttr("class").hide();
-            taskInput.val("");
-        }
-        else {
-            taskInput.trigger("focus").trigger("select");
-            messageArea
-                .show()
-                .addClass("alert alert-danger")
-                .text("Please enter a valid Task.");
-        }
-        addTaskEventListeners();
+      $("#taskList").append(newElement);
+      messageArea.removeAttr("class").hide();
+      taskInput.val("");
+    } else {
+      taskInput.trigger("focus").trigger("select");
+      messageArea
+        .show()
+        .addClass("alert alert-danger")
+        .text("Please enter a valid Task.");
     }
-    function DisplayTaskList() {
-        let messageArea = $("#messageArea");
-        messageArea.hide();
-        let taskInput = $("#taskTextInput");
-        $("#newTaskButton").on("click", function () {
-            AddNewTask();
-        });
-        taskInput.on("keypress", function (event) {
-            if (event.key == "Enter") {
-                AddNewTask();
-            }
-        });
-    }
-    function Start() {
-        loadHeader(router.ActiveLink);
-        loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-        loadFooter();
-    }
-    window.addEventListener("load", Start);
+    addTaskEventListeners();
+  }
+  function DisplayTaskList() {
+    let messageArea = $("#messageArea");
+    messageArea.hide();
+    let taskInput = $("#taskTextInput");
+    $("#newTaskButton").on("click", function () {
+      AddNewTask();
+    });
+    taskInput.on("keypress", function (event) {
+      if (event.key == "Enter") {
+        AddNewTask();
+      }
+    });
+  }
+  function Start() {
+    loadHeader(router.ActiveLink);
+    loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+    loadFooter();
+  }
+  window.addEventListener("load", Start);
 })(core || (core = {}));
-;
 //# sourceMappingURL=app.js.map

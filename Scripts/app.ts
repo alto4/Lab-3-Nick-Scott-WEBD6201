@@ -1,3 +1,11 @@
+/* Authors:   Nick Sturch-Flint - 100303769 & Scott Alton - 100762638
+ * Date:      2021-03-24
+ * Reference: This program was built from a template provided by Professor Tom Tsiliopoulos at Durham College
+ * Program:   This file contains the main functiality for our SPA site, including all interactive page events. The main focus for this lab
+ *            was to successfully make the provided task list code work within a SPA using AJAX. Other new features include a custom
+ *            front-end router, as well as a login system that authenticates user's and provides them access to restricted pages.
+ */
+  
 namespace core
 {
   /**
