@@ -666,29 +666,6 @@ namespace core
   }
 
   /**
-   * This function is the Callback function for the TaskList
-   * 
-   * @returns {void}
-   *
-   */
-  function DisplayTaskList(): void {
-    let messageArea = $("#messageArea");
-    messageArea.hide();
-    let taskInput = $("#taskTextInput");
-
-    // add a new Task to the Task List
-    $("#newTaskButton").on("click", function () {
-      AddNewTask();
-    });
-
-    taskInput.on("keypress", function (event) {
-      if (event.key == "Enter") {
-        AddNewTask();
-      }
-    });    
-  }
-
-  /**
    * Starts the page 
    * 
    * @returns {void}
