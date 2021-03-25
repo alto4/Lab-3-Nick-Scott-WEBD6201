@@ -463,7 +463,7 @@ namespace core
     if (sessionStorage.getItem("user")) {
       // swap out the login link for logout
       $("#loginListItem").html(
-        `<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`
+        `<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt fa-lg"></i> Logout</a>`
       );
 
       $("#logout").on("click", function () {
@@ -491,14 +491,14 @@ namespace core
       if(!taskListLink) {
         // Add link to Task List for logged in user
         $(`<li id="taskListLink"  class="nav-item">
-          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-thumbtack"></i> Task List</a>
+          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-thumbtack fa-lg"></i> Task List</a>
         </li>`).insertBefore("#loginListItem");
       }
     } else {
       //logged out
       // swap out the login link for logout
       $("#loginListItem").html(
-        `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
+        `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt fa-lg"></i> Login</a>`
       );
 
       // Remove contact list link if user is logged out
@@ -686,7 +686,6 @@ namespace core
    * @returns {void}
    */
   function Start(): void {
-    console.log("App Started...");
 
     loadHeader(router.ActiveLink);
 

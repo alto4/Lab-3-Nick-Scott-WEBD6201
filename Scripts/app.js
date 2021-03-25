@@ -253,7 +253,7 @@ var core;
         let contactListLink = $("#contactListLink")[0];
         let taskListLink = $("#taskListLink")[0];
         if (sessionStorage.getItem("user")) {
-            $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
+            $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt fa-lg"></i> Logout</a>`);
             $("#logout").on("click", function () {
                 sessionStorage.clear();
                 loadLink("login");
@@ -268,12 +268,12 @@ var core;
             }
             if (!taskListLink) {
                 $(`<li id="taskListLink"  class="nav-item">
-          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-thumbtack"></i> Task List</a>
+          <a id="task-list" class="nav-link" aria-current="page"><i class="fas fa-thumbtack fa-lg"></i> Task List</a>
         </li>`).insertBefore("#loginListItem");
             }
         }
         else {
-            $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`);
+            $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt fa-lg"></i> Login</a>`);
             if (contactListLink) {
                 $("#contactListLink").remove();
             }
@@ -396,7 +396,6 @@ var core;
         });
     }
     function Start() {
-        console.log("App Started...");
         loadHeader(router.ActiveLink);
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
         loadFooter();
