@@ -292,7 +292,6 @@ var core;
         authGuard();
         addTaskEventListeners();
         $("#newTaskButton").on("click", function () {
-            alert("Clicked!");
             AddNewTask();
         });
     }
@@ -349,7 +348,7 @@ var core;
                 }
             });
         });
-        $("ul").on("click", ".deleteButton", function () {
+        $("ul").off("click").on("click", ".deleteButton", function () {
             if (confirm("Are you sure?")) {
                 $(this).closest("li").remove();
             }
